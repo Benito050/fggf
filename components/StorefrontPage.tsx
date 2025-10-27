@@ -2,43 +2,71 @@
 import React from 'react';
 import { ProductData } from '../types';
 import { ProductCard } from './ProductCard';
-import { SparklesIcon } from './icons';
+import { StoreFilters } from './StoreFilters';
+
+type SortOption = 'price-asc' | 'price-desc' | 'title-asc' | 'title-desc';
 
 interface StorefrontPageProps {
   products: ProductData[];
-  onReset: () => void;
   onAddToCart: (product: ProductData) => void;
   onViewProduct: (product: ProductData) => void;
+  onResetGenerator: () => void;
+  // Search and Sort
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+  sortOption: SortOption;
+  onSortChange: (option: SortOption) => void;
+  // New Filters
+  priceRanges: { label: string; min: number; max: number }[];
+  selectedPrice: string;
+  onPriceChange: (value: string) => void;
+  materials: string[];
+  selectedMaterial: string;
+  onMaterialChange: (value: string) => void;
+  onClearFilters: () => void;
 }
 
-export const StorefrontPage: React.FC<StorefrontPageProps> = ({ products, onReset, onAddToCart, onViewProduct }) => {
-  return (
-    <div className="max-w-6xl mx-auto animate-fade-in p-4">
-      <div className="bg-blue-100 border-l-4 border-plasma-accent text-plasma-text p-4 rounded-md mb-8 shadow-sm text-center">
-        <h2 className="font-bold text-lg">Success! Your E-Commerce Page is Ready.</h2>
-        <p>Here is a preview of your AI-generated storefront with {products.length} product(s) detected.</p>
-      </div>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map(product => (
-          <ProductCard 
-            key={product.id} 
-            product={product}
-            onAddToCart={onAddToCart}
-            onViewProduct={onViewProduct}
-          />
-        ))}
-      </div>
+export const StorefrontPage: React.FC<StorefrontPageProps> = (props) => {
+  const { products, onAddToCart, onViewProduct, onResetGenerator, searchTerm } = props;
 
-      <div className="text-center mt-12">
-        <button 
-            onClick={onReset}
-            className="bg-plasma-accent text-white font-bold py-2 px-6 rounded-lg hover:bg-plasma-accent-hover transition-colors inline-flex items-center gap-2"
+  return (
+    <div className="max-w-7xl mx-auto p-4 animate-fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+          <h1 className="text-4xl font-bold text-plasma-text">Your AI-Generated Store</h1>
+          <p className="text-plasma-text-subtle mt-1">
+            Explore the products created from your video.
+          </p>
+        </div>
+        <button
+          onClick={onResetGenerator}
+          className="bg-plasma-bg hover:bg-plasma-border text-plasma-text font-semibold py-2 px-4 border border-plasma-border rounded-lg transition-colors w-full md:w-auto"
         >
-            <div className="w-5 h-5"><SparklesIcon/></div>
-            Create Another Storefront
+          Generate a New Store
         </button>
       </div>
+
+      <StoreFilters {...props} productCount={products.length} />
+
+      {products.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={onAddToCart}
+              onViewProduct={onViewProduct}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 bg-plasma-surface rounded-lg border border-plasma-border">
+          <h3 className="text-xl font-semibold text-plasma-text">No Products Found</h3>
+          <p className="text-plasma-text-subtle mt-2">
+            Your search and filter criteria did not match any products. Try clearing the filters.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -53,7 +81,6 @@ const fadeIn = `
 }
 `;
 
-// Fix: To avoid creating multiple style tags, check if it exists first.
 if (!document.querySelector('#storefront-page-animation')) {
     const styleSheet = document.createElement("style");
     styleSheet.id = 'storefront-page-animation';

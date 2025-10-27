@@ -2,6 +2,11 @@ export interface User {
   email: string;
 }
 
+export interface PriceComparison {
+  store: string;
+  price: number;
+}
+
 export interface ProductData {
   id: string;
   title: string;
@@ -11,8 +16,15 @@ export interface ProductData {
   material?: string;
   dimensions?: string;
   features?: string[];
+  priceComparisons?: PriceComparison[];
 }
 
 export interface CartItem extends ProductData {
   quantity: number;
+}
+
+export interface Message {
+  role: 'user' | 'model';
+  text: string;
+  groundingChunks?: any[];
 }

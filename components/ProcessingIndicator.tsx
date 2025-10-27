@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { SpinnerIcon } from './icons';
 
-const generationSteps = [
+const generationStepsDetails = [
   "Initializing AI modules...",
   "Analyzing product visuals...",
   "Identifying all products in the frame...",
   "Generating compelling product descriptions...",
   "Analyzing competitive market pricing...",
+];
+
+const generationStepsImages = [
+  "Preparing image generation models...",
+  "Creating unique image for Product 1...",
+  "Creating unique image for Product 2...",
+  "Finalizing product images...",
   "Building your storefront page...",
 ];
 
@@ -15,27 +22,33 @@ const extractionSteps = [
   "Seeking to key moments in the video...",
   "Extracting high-quality frames...",
   "Finalizing image selection...",
-]
+];
 
 interface ProcessingIndicatorProps {
   isExtracting: boolean;
+  isGeneratingImages?: boolean;
 }
 
-export const ProcessingIndicator: React.FC<ProcessingIndicatorProps> = ({ isExtracting }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+export const ProcessingIndicator: React.FC<ProcessingIndicatorProps> = ({ isExtracting, isGeneratingImages = false }) => {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   
-  const steps = isExtracting ? extractionSteps : generationSteps;
+  const steps = useMemo(() => {
+    if (isExtracting) return extractionSteps;
+    if (isGeneratingImages) return generationStepsImages;
+    return generationStepsDetails;
+  }, [isExtracting, isGeneratingImages]);
+
   const title = isExtracting ? "Extracting Key Frames..." : "Generating Your Storefront";
 
   useEffect(() => {
     // Reset step count when the mode changes
-    setCurrentStep(0);
+    setCurrentStepIndex(0);
     const interval = setInterval(() => {
-      setCurrentStep((prevStep) => (prevStep + 1) % steps.length);
+      setCurrentStepIndex((prevStep) => (prevStep + 1) % steps.length);
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [isExtracting, steps.length]);
+  }, [steps]);
 
   return (
     <div className="text-center p-8">
@@ -44,7 +57,7 @@ export const ProcessingIndicator: React.FC<ProcessingIndicatorProps> = ({ isExtr
       </div>
       <h2 className="text-2xl font-bold mt-6 text-plasma-text">{title}</h2>
       <p className="text-plasma-text-subtle mt-2 h-6 transition-opacity duration-500">
-        {steps[currentStep]}
+        {steps[currentStepIndex]}
       </p>
     </div>
   );

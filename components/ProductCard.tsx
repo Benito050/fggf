@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ProductData } from '../types';
 import { CheckIcon } from './icons';
@@ -27,7 +26,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
         <h3 className="text-lg font-semibold text-plasma-text truncate" title={product.title}>
             {product.title}
         </h3>
-        <p className="text-2xl font-light text-plasma-accent my-2">${product.price.toFixed(2)}</p>
+        <p className="text-2xl font-light text-plasma-accent my-2">₹{product.price.toFixed(2)}</p>
         <p className="text-sm text-plasma-text-subtle h-10 overflow-hidden text-ellipsis">
           {product.description}
         </p>

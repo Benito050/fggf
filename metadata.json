@@ -3,6 +3,7 @@
   "description": "An AI-powered solution for small shops to create a fully functional online store simply by uploading a single product video. It uses computer vision and language models to auto-generate product listings.",
   "requestFramePermissions": [
     "camera",
-    "microphone"
+    "microphone",
+    "geolocation"
   ]
 }

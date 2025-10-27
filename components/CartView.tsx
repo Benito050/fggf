@@ -44,7 +44,7 @@ export const CartView: React.FC<CartViewProps> = ({ items, isOpen, onClose, onUp
                   <img src={item.image} alt={item.title} className="w-20 h-20 object-cover rounded-md border border-plasma-border flex-shrink-0" />
                   <div className="flex-grow">
                     <h3 className="font-semibold text-plasma-text leading-tight">{item.title}</h3>
-                    <p className="text-sm text-plasma-text-subtle">${item.price.toFixed(2)}</p>
+                    <p className="text-sm text-plasma-text-subtle">₹{item.price.toFixed(2)}</p>
                     <div className="flex items-center justify-between mt-2">
                        <div className="flex items-center border border-plasma-border rounded-md">
                         <button 
@@ -83,7 +83,7 @@ export const CartView: React.FC<CartViewProps> = ({ items, isOpen, onClose, onUp
             <footer className="p-4 border-t border-plasma-border bg-plasma-surface flex-shrink-0">
               <div className="flex justify-between items-center font-bold text-lg text-plasma-text mb-4">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <button 
                 onClick={() => alert('Proceeding to a mock checkout!')}
