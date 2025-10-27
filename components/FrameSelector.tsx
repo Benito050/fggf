@@ -1,50 +1,93 @@
-import React from 'react';
-import { SparklesIcon } from './icons';
+import React, { useState } from 'react';
 
 interface FrameSelectorProps {
   frames: string[];
-  onSelect: (frameDataUrl: string) => void;
+  onSelect: (frame: string) => void;
   onCancel: () => void;
 }
 
 export const FrameSelector: React.FC<FrameSelectorProps> = ({ frames, onSelect, onCancel }) => {
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const handleSelect = (frame: string) => {
+    setSelected(frame);
+  };
+
+  const handleConfirm = () => {
+    if (selected) {
+      onSelect(selected);
+    }
+  };
+
+  const handleResetSelection = () => {
+    setSelected(null);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto text-center animate-fade-in">
-      <h2 className="text-3xl font-bold text-slate-800">Select the Best Product Image</h2>
-      <p className="text-slate-500 mt-2 mb-8">
-        We've extracted a few key frames from your video. Choose the one that best showcases your product.
+    <div className="max-w-4xl mx-auto text-center p-4 animate-fade-in">
+      <h2 className="text-3xl font-bold text-plasma-text mb-2">
+        {selected ? "Confirm Your Selection" : "Select the Best Frame"}
+      </h2>
+      <p className="text-plasma-text-subtle mb-8">
+        {selected ? "This image will be used to generate your storefront." : "Choose the clearest image of your product(s) to generate your storefront."}
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        {frames.map((frame, index) => (
-          <button
-            key={index}
-            onClick={() => onSelect(frame)}
-            className="block rounded-lg overflow-hidden border-2 border-transparent hover:border-indigo-500 hover:shadow-2xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 group"
-          >
-            <img 
-              src={frame} 
-              alt={`Frame ${index + 1}`} 
-              className="w-full h-full object-cover aspect-video"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="text-white font-bold text-lg">Use This Image</span>
-            </div>
-          </button>
-        ))}
-      </div>
-       <div className="text-center mt-8">
-            <button 
-                onClick={onCancel}
-                className="text-slate-600 font-semibold py-2 px-6 rounded-lg hover:bg-slate-200 transition-colors"
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        {frames.map((frame, index) => {
+          const isSelected = selected === frame;
+          const isEnabled = !selected || isSelected;
+          return (
+            <div
+              key={index}
+              className={`rounded-lg overflow-hidden border-2 bg-plasma-surface transition-all transform ${
+                isSelected
+                  ? 'border-plasma-accent ring-2 ring-plasma-accent ring-offset-2'
+                  : 'border-plasma-border'
+              } ${
+                isEnabled
+                  ? 'cursor-pointer hover:border-plasma-accent hover:scale-105'
+                  : 'opacity-50'
+              }`}
+              onClick={isEnabled ? () => handleSelect(frame) : undefined}
+              role="button"
+              aria-label={`Select frame ${index + 1}`}
+              aria-pressed={isSelected}
             >
-                Cancel & Start Over
+              <img src={frame} alt={`Frame ${index + 1}`} className="w-full h-full object-cover aspect-video" />
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-8">
+        {selected ? (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={handleConfirm}
+              className="bg-plasma-accent text-white font-bold py-2 px-6 rounded-lg hover:bg-plasma-accent-hover transition-colors"
+            >
+              Generate with this Image
             </button>
-        </div>
+            <button
+              onClick={handleResetSelection}
+              className="bg-plasma-bg text-plasma-text font-bold py-2 px-6 rounded-lg hover:bg-plasma-border transition-colors border border-plasma-border"
+            >
+              Change Selection
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={onCancel}
+            className="bg-gray-700 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Cancel and Start Over
+          </button>
+        )}
+      </div>
     </div>
   );
 };
 
-// Add fade-in animation styles if they are not already global
 const fadeIn = `
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -54,9 +97,10 @@ const fadeIn = `
   animation: fadeIn 0.5s ease-out forwards;
 }
 `;
-if (!document.querySelector('#animation-styles')) {
+
+if (!document.querySelector('#frame-selector-animation')) {
     const styleSheet = document.createElement("style");
-    styleSheet.id = 'animation-styles';
+    styleSheet.id = 'frame-selector-animation';
     styleSheet.innerText = fadeIn;
     document.head.appendChild(styleSheet);
 }

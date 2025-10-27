@@ -1,54 +1,125 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ProductData } from '../types';
-import { SparklesIcon } from './icons';
+import { ArrowLeftIcon, SparklesIcon, SpinnerIcon, ListIcon, CheckCircleIcon } from './icons';
 
 interface ProductPageProps {
   product: ProductData;
   onReset: () => void;
+  onImageEdit: (prompt: string) => void;
+  isEditing: boolean;
+  editError: string;
+  onAddToCart: (product: ProductData) => void;
 }
 
-export const ProductPage: React.FC<ProductPageProps> = ({ product, onReset }) => {
+export const ProductPage: React.FC<ProductPageProps> = ({ product, onReset, onImageEdit, isEditing, editError, onAddToCart }) => {
+  const [editPrompt, setEditPrompt] = useState('');
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAddToCartClick = () => {
+    onAddToCart(product);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000); // Reset after 2 seconds
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editPrompt.trim()) {
+      onImageEdit(editPrompt);
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-        <div className="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-md mb-8 shadow-sm text-center">
-            <h2 className="font-bold text-lg">Success! Your E-Commerce Page is Ready.</h2>
-            <p>Here is a preview of your AI-generated storefront.</p>
+    <div className="max-w-6xl mx-auto p-4 animate-fade-in">
+      <button
+        onClick={onReset}
+        className="inline-flex items-center gap-2 text-plasma-text-subtle hover:text-plasma-accent font-semibold mb-6 transition-colors"
+      >
+        <div className="w-5 h-5"><ArrowLeftIcon /></div>
+        Back to Storefront
+      </button>
+
+      <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+        {/* Image Column */}
+        <div className="space-y-6">
+          <img src={product.image} alt={product.title} className="w-full h-auto object-cover rounded-xl shadow-lg border border-plasma-border" />
+          
+          {/* Magic Edit Section */}
+          <div className="bg-plasma-surface p-6 rounded-xl shadow-md border border-plasma-border">
+            <h3 className="text-lg font-bold text-plasma-text flex items-center gap-2">
+              <div className="w-6 h-6 text-plasma-accent"><SparklesIcon /></div>
+              Magic Edit
+            </h3>
+            <p className="text-plasma-text-subtle text-sm mt-1 mb-4">Describe a change, and the AI will edit the image for you.</p>
+            <form onSubmit={handleEditSubmit} className="flex flex-col gap-3">
+              <input
+                type="text"
+                value={editPrompt}
+                onChange={(e) => setEditPrompt(e.target.value)}
+                placeholder="e.g., 'Make the background solid blue'"
+                className="w-full px-4 py-2 bg-plasma-bg border border-plasma-border rounded-md focus:ring-2 focus:ring-plasma-accent focus:outline-none"
+                disabled={isEditing}
+              />
+              <button
+                type="submit"
+                disabled={isEditing || !editPrompt.trim()}
+                className="w-full flex items-center justify-center gap-2 bg-plasma-accent text-white font-bold py-2 px-4 rounded-lg hover:bg-plasma-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isEditing ? <><div className="w-5 h-5"><SpinnerIcon /></div> Generating...</> : 'Apply Edit'}
+              </button>
+            </form>
+            {editError && <p className="text-red-600 text-sm mt-3">{editError}</p>}
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-xl overflow-hidden md:grid md:grid-cols-2">
-            <div className="p-4 md:p-0">
-                <img src={product.image} alt={product.title} className="w-full h-full object-cover"/>
-            </div>
-            <div className="p-6 md:p-8 flex flex-col">
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{product.title}</h1>
-                <p className="text-4xl font-light text-indigo-600 my-4">
-                    ${product.price.toFixed(2)}
-                </p>
-                <div className="prose prose-slate mt-4 text-slate-600 flex-grow">
-                  <p>{product.description}</p>
-                </div>
-                
-                <div className="mt-8">
-                    <button className="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-indigo-700 transition-colors">
-                        Add to Cart
-                    </button>
-                    <button className="w-full mt-2 bg-slate-200 text-slate-800 font-bold py-3 px-6 rounded-lg hover:bg-slate-300 transition-colors">
-                        Buy Now
-                    </button>
-                </div>
-            </div>
-        </div>
+        {/* Details Column */}
+        <div className="space-y-6">
+          <h1 className="text-4xl font-bold text-plasma-text">{product.title}</h1>
+          <p className="text-4xl font-light text-plasma-accent">${product.price.toFixed(2)}</p>
+          <p className="text-plasma-text-subtle leading-relaxed">{product.description}</p>
+          
+          <button
+            onClick={handleAddToCartClick}
+            disabled={isAdded}
+            className="w-full bg-plasma-accent text-white font-bold py-3 px-4 rounded-lg hover:bg-plasma-accent-hover transition-colors flex items-center justify-center gap-2 disabled:bg-green-500"
+          >
+            {isAdded ? <><div className="w-6 h-6"><CheckCircleIcon /></div> Added to Cart!</> : 'Add to Cart'}
+          </button>
 
-        <div className="text-center mt-8">
-            <button 
-                onClick={onReset}
-                className="bg-slate-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-slate-900 transition-colors inline-flex items-center gap-2"
-            >
-                <div className="w-5 h-5"><SparklesIcon/></div>
-                Create Another
-            </button>
+          {/* Specifications */}
+          {(product.material || product.dimensions) && (
+            <div className="bg-plasma-surface p-4 rounded-xl border border-plasma-border">
+              <h3 className="text-lg font-bold text-plasma-text mb-3 flex items-center gap-2">
+                 <div className="w-5 h-5"><ListIcon/></div>
+                 Specifications
+              </h3>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                {product.material && <div className="text-plasma-text-subtle">Material</div>}
+                {product.material && <div className="text-plasma-text font-medium">{product.material}</div>}
+                {product.dimensions && <div className="text-plasma-text-subtle">Dimensions</div>}
+                {product.dimensions && <div className="text-plasma-text font-medium">{product.dimensions}</div>}
+              </div>
+            </div>
+          )}
+
+          {/* Features */}
+          {product.features && product.features.length > 0 && (
+            <div className="bg-plasma-surface p-4 rounded-xl border border-plasma-border">
+               <h3 className="text-lg font-bold text-plasma-text mb-3 flex items-center gap-2">
+                 <div className="w-5 h-5"><CheckCircleIcon/></div>
+                 Key Features
+              </h3>
+              <ul className="space-y-2">
+                {product.features.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-2 text-plasma-text">
+                    <span className="text-green-500 mt-1 flex-shrink-0"><div className="w-4 h-4"><CheckCircleIcon /></div></span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+      </div>
     </div>
   );
 };
@@ -63,6 +134,9 @@ const fadeIn = `
 }
 `;
 
-const styleSheet = document.createElement("style");
-styleSheet.innerText = fadeIn;
-document.head.appendChild(styleSheet);
+if (!document.querySelector('#product-page-animation')) {
+    const styleSheet = document.createElement("style");
+    styleSheet.id = 'product-page-animation';
+    styleSheet.innerText = fadeIn;
+    document.head.appendChild(styleSheet);
+}

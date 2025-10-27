@@ -4,10 +4,10 @@ import { SpinnerIcon } from './icons';
 const generationSteps = [
   "Initializing AI modules...",
   "Analyzing product visuals...",
-  "Transcribing audio narration...",
-  "Generating compelling product description...",
+  "Identifying all products in the frame...",
+  "Generating compelling product descriptions...",
   "Analyzing competitive market pricing...",
-  "Building your storefront...",
+  "Building your storefront page...",
 ];
 
 const extractionSteps = [
@@ -39,11 +39,11 @@ export const ProcessingIndicator: React.FC<ProcessingIndicatorProps> = ({ isExtr
 
   return (
     <div className="text-center p-8">
-      <div className="w-16 h-16 mx-auto text-indigo-600">
+      <div className="w-16 h-16 mx-auto text-plasma-accent">
         <SpinnerIcon />
       </div>
-      <h2 className="text-2xl font-bold mt-6 text-slate-800">{title}</h2>
-      <p className="text-slate-500 mt-2 h-6 transition-opacity duration-500">
+      <h2 className="text-2xl font-bold mt-6 text-plasma-text">{title}</h2>
+      <p className="text-plasma-text-subtle mt-2 h-6 transition-opacity duration-500">
         {steps[currentStep]}
       </p>
     </div>

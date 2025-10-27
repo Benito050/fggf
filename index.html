@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI E-Commerce Storefront Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'plasma-bg': '#eff0f1', // Main background color
+              'plasma-surface': '#fcfcfc', // Card and surface backgrounds
+              'plasma-text': '#232627', // Primary text color
+              'plasma-text-subtle': '#7f8c8d', // Secondary/muted text
+              'plasma-border': '#d5d6d7', // Borders for inputs and cards
+              'plasma-accent': '#3daee9', // The signature KDE blue for buttons and highlights
+              'plasma-accent-hover': '#2988c0', // A slightly darker blue for hover states
+            },
+          },
+        },
+      };
+    </script>
     <script type="importmap">
       {
         "imports": {

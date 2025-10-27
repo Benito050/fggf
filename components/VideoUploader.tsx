@@ -58,13 +58,12 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({ onVideoSelect, exi
 
   if (videoSrc && existingFile) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md border border-slate-200">
-        <h3 className="text-lg font-semibold mb-4 text-center">Your Product Video</h3>
+      <div className="bg-plasma-surface p-6 rounded-lg shadow-md border border-plasma-border">
+        <h3 className="text-lg font-semibold mb-4 text-center text-plasma-text">Your Product Video</h3>
         <video src={videoSrc} controls className="w-full rounded-lg aspect-video" />
         <div className="text-center mt-4">
           <button
-            onClick={() => onVideoSelect(existingFile)}
-            className="text-indigo-600 hover:text-indigo-800 font-semibold"
+            className="text-plasma-accent hover:text-plasma-accent-hover font-semibold"
             type="button"
             onClickCapture={handleClick}
           >
@@ -89,7 +88,7 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({ onVideoSelect, exi
       onDrop={handleDrop}
       onClick={handleClick}
       className={`p-8 md:p-12 border-2 border-dashed rounded-xl text-center cursor-pointer transition-colors ${
-        isDragging ? 'border-indigo-500 bg-indigo-50' : 'border-slate-300 bg-white hover:border-indigo-400'
+        isDragging ? 'border-plasma-accent bg-blue-50' : 'border-plasma-border bg-plasma-surface hover:border-plasma-accent'
       }`}
     >
       <input
@@ -99,12 +98,12 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({ onVideoSelect, exi
         onChange={(e) => handleFileChange(e.target.files)}
         className="hidden"
       />
-      <div className="w-16 h-16 mx-auto text-slate-400 mb-4">
+      <div className="w-16 h-16 mx-auto text-plasma-text-subtle mb-4">
         <UploadIcon />
       </div>
-      <p className="text-xl font-semibold text-slate-700">Drag & drop your video here</p>
-      <p className="text-slate-500 mt-1">or click to browse files</p>
-      <p className="text-xs text-slate-400 mt-4">MP4, MOV, WEBM supported</p>
+      <p className="text-xl font-semibold text-plasma-text">Drag & drop your video here</p>
+      <p className="text-plasma-text-subtle mt-1">or click to browse files</p>
+      <p className="text-xs text-plasma-text-subtle mt-4">MP4, MOV, WEBM supported</p>
     </div>
   );
 };
