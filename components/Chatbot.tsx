@@ -77,8 +77,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ user, proactiveMessageTrigger,
     setIsLoading(true);
 
     try {
-      // FIX: Corrected the argument for sendMessage to be a string, not an object. The SDK expects the content directly.
-      const response = await chatSessionRef.current.sendMessage(messageToSend);
+      const response = await chatSessionRef.current.sendMessage({ message: messageToSend });
       
       const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks?.map((chunk: any) => chunk) || [];
 
