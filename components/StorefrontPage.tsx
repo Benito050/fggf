@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ProductData } from '../types';
 import { ProductCard } from './ProductCard';

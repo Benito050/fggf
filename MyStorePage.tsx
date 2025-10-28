@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { ProductData } from './types';
 import { StorefrontPage } from './components/StorefrontPage';

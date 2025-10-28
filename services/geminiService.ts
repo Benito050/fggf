@@ -81,40 +81,18 @@ Your response must be a valid JSON array. Each object must have "id", "title", "
         model: 'gemini-2.5-pro',
         contents: { parts: [imagePart, { text: prompt }] },
         config: {
-            responseMimeType: 'application/json',
-            responseSchema: {
-                type: Type.ARRAY,
-                items: {
-                    type: Type.OBJECT,
-                    properties: {
-                        id: { type: Type.STRING },
-                        title: { type: Type.STRING },
-                        description: { type: Type.STRING },
-                        price: { type: Type.NUMBER },
-                        material: { type: Type.STRING, nullable: true },
-                        dimensions: { type: Type.STRING, nullable: true },
-                        features: { type: Type.ARRAY, items: { type: Type.STRING }, nullable: true },
-                        priceComparisons: {
-                            type: Type.ARRAY,
-                            items: {
-                                type: Type.OBJECT,
-                                properties: {
-                                    store: { type: Type.STRING },
-                                    price: { type: Type.NUMBER }
-                                },
-                                required: ['store', 'price']
-                            },
-                            nullable: true
-                        }
-                    },
-                    required: ['id', 'title', 'description', 'price']
-                }
-            },
             tools: [{ googleSearch: {} }]
         }
     });
 
-    const jsonString = response.text;
+    let jsonString = response.text.trim();
+    
+    // The model might wrap the JSON in markdown backticks, so we extract it.
+    const jsonMatch = jsonString.match(/```(json)?\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[2]) {
+        jsonString = jsonMatch[2];
+    }
+
     try {
         const products = JSON.parse(jsonString);
         // Basic validation
